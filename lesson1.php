@@ -15,13 +15,27 @@ class Tag
     {
         $this->name = $name;
     }
+
+    public function getAttr() : array
+    {
+        return $this->arAttributes ?? [];
+    }
+
+    public function strAttribute() : string
+    {
+        $str = '';
+        foreach ($this->getAttr() as $key => $attribute) {
+            $str .= $key . '="' . $attribute . '" ';
+        }
+        return $str;
+    }
 }
 
 class SingleTag extends Tag
 {
     public function render()
     {
-        return "<" . $this->name . ">";
+        return "<" . $this->name . "  " . $this->strAttribute() . " >";
     }
 }
 
