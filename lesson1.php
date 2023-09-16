@@ -6,9 +6,10 @@ class Tag
     protected array $arAttributes;
     protected array $arChild;
 
-    public function attr($key, $value)
+    public function attr($key, $value) : self
     {
         $this->arAttributes[$key] = $value;
+        return $this;
     }
 
     public function __construct($name)
@@ -41,9 +42,10 @@ class SingleTag extends Tag
 
 class PairTag extends Tag
 {
-    public function appendChild(Tag $item)
+    public function appendChild(Tag $item) : self
     {
         $this->arChild[] = $item;
+        return $this;
     }
 
     public function render()
@@ -57,14 +59,10 @@ class PairTag extends Tag
 
 $img = new SingleTag('img');
 
-$img->attr('src', './nz');
-$img->attr('alt', 'nz');
+$img->attr('src', './nz')->attr('alt', 'nz');
 
 $hr = new SingleTag('hr');
 
-$a = new PairTag('a');
-$a->attr('href', './nz');
-$a->appendChild($img);
-$a->appendChild($hr);
+$a2 = (new PairTag('a'))->attr('href', './nz')->appendChild($img)->appendChild($hr);
 
-echo $a->render();
+echo (new PairTag('a'))->attr('href', './nz')->appendChild($a2)->appendChild($img)->appendChild($hr)->render();
