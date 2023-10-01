@@ -11,11 +11,39 @@ interface IStorage
     public function get(string $key) : mixed;
 }
 
-class Storage implements IStorage
+class Storage implements IStorage, JsonSerializable
 {
+    private $arStorage = [];
+
+    public function add(string $key, mixed $data) : void
+    {
+        $this->arStorage[$key] = $data;
+    }
+
+    public function remove(string $key) : void
+    {
+        if ($this->contains($key)) {
+            unset($this->arStorage[$key]);
+        }
+    }
+
+    public function contains(string $key) : bool
+    {
+        return (bool)$this->arStorage[$key];
+    }
+
+    public function get(string $key) : mixed
+    {
+        return $this->arStorage[$key] ?? null;
+    }
+
+    public function jsonSerialize()
+    {
+        return serialize($this);
+    }
 }
 
-class Animal
+class Animal implements JsonSerializable
 {
     public $name;
     public $health;
@@ -41,6 +69,11 @@ class Animal
             $this->health = 0;
             $this->alive = false;
         }
+    }
+
+    public function jsonSerialize()
+    {
+        return serialize($this);
     }
 }
 
@@ -76,6 +109,6 @@ $logger->addObject($gameStorage);
 
 echo $logger->log('<br>') . '<hr>';
 
-$a2->applyDamage($a1->calcDammage());
+/*$a2->applyDamage($a1->calcDammage());*/
 $gameStorage->add('other', mt_rand(1, 10));
 echo $logger->log('<br>');
